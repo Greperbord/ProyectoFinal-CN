@@ -40,7 +40,7 @@ const loginUser = async(req, res) => {
 
 const registerUser = async(req, res) => {
     try {
-        const { email, password, nombre, apaterno, amaterno, direccion, telefono } = req.body
+        const { email, password, nombre, apellido, telefono, cumpleaños } = req.body
         const existingUser = await User.findByEmail(email)
 
         if (existingUser) {
@@ -49,7 +49,7 @@ const registerUser = async(req, res) => {
             })
         }
 
-        const newUser = await User.createUser(email, password, nombre, apaterno, amaterno, direccion, telefono)
+        const newUser = await User.createUser(email, password, nombre, apellido, telefono, cumpleaños)
 
         res.status(201).json({
             message: 'User registered successfully',
