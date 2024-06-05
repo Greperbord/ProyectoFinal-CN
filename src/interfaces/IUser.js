@@ -8,6 +8,7 @@ class IUser {
     */
     static async createUser (email, password) {}
     static async findByEmail (email) {}
+    static async getAllUsers() {}
     async verifyPassword(password) {}
 }
 

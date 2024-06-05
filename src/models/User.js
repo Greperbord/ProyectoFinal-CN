@@ -4,17 +4,17 @@ const IUser = require('../interfaces/IUser')
 const firestore = admin.firestore()
 
 class User extends IUser {
-    constructor (email, password, nombre, apellido, telefono, cumpleaños) {
+    constructor (email, password, nombre, apellido, telefono, edad) {
         super()
         this.email = email
         this.password = password
         this.nombre = nombre
         this.apellido = apellido
         this.telefono = telefono
-        this.cumpleaños = cumpleaños
+        this.edad = edad
     }
 
-    static async createUser (email, password, nombre, apellido, telefono, cumpleaños) {
+    static async createUser (email, password, nombre, apellido, telefono, edad) {
         try {
             const hash = await bcrypt.hash(password, 10)    
             const user = firestore.collection('users').doc(email)
@@ -24,10 +24,10 @@ class User extends IUser {
                 nombre,
                 apellido,
                 telefono,
-                cumpleaños
+                edad
             })
 
-            return new User(email, password, nombre, apellido, telefono, cumpleaños)
+            return new User(email, password, nombre, apellido, telefono, edad)
         } catch (error) {
             console.log('@@ Error => ', error)
             throw new Error ('Error creating user')
@@ -36,6 +36,22 @@ class User extends IUser {
 
     async verifyPassword (password) {
         return await bcrypt.compare(password, this.password)
+    }
+
+    static async getAllUsers() {
+        try {
+            const users = await firestore.collection('users').get()
+            const foundUsers = []
+            users.forEach(doc => {
+                foundUsers.push({
+                    email: doc.email,
+                    ...doc.data()
+                })
+            })
+            return foundUsers
+        } catch (error) {
+            throw error
+        }
     }
 
     static async findByEmail(email) {

@@ -40,7 +40,7 @@ const loginUser = async(req, res) => {
 
 const registerUser = async(req, res) => {
     try {
-        const { email, password, nombre, apellido, telefono, cumpleaños } = req.body
+        const { email, password, nombre, apellido, telefono, edad } = req.body
         const existingUser = await User.findByEmail(email)
 
         if (existingUser) {
@@ -49,7 +49,7 @@ const registerUser = async(req, res) => {
             })
         }
 
-        const newUser = await User.createUser(email, password, nombre, apellido, telefono, cumpleaños)
+        const newUser = await User.createUser(email, password, nombre, apellido, telefono, edad)
 
         res.status(201).json({
             message: 'User registered successfully',
@@ -62,4 +62,18 @@ const registerUser = async(req, res) => {
     }
 }
 
-module.exports = { registerUser, loginUser }
+const getAllUsers = async(req, res) => {
+    try {
+        const users = await User.getAllUsers()
+        res.json({
+            users,
+            message: 'success'
+        })
+    } catch (error) {
+        res.status(500).json({
+            message: 'Internal Server Error😭'
+        })
+    }
+}
+
+module.exports = { registerUser, loginUser, getAllUsers }
